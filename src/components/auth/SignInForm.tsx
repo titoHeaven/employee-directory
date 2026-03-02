@@ -2,15 +2,19 @@ import { Card, CardContent, CardTitle } from "../ui/card";
 import { useForm } from "@tanstack/react-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useNavigate } from "@tanstack/react-router";
 
 export function SignInForm() {
+  const navigate = useNavigate();
+
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
     },
     onSubmit: async ({ value }) => {
-      alert(`Email: ${value.email}, Password: ${value.password}`);
+      // alert(`Email: ${value.email}, Password: ${value.password}`);
+      navigate({ to: "/dashboard" });
     },
   });
   return (
