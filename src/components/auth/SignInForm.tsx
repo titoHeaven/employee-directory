@@ -3,24 +3,43 @@ import { useForm } from "@tanstack/react-form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useNavigate } from "@tanstack/react-router";
+import {
+  userFormSchema,
+  emailSchema,
+  passwordSchema,
+  type UserFormSchema,
+} from "../fn/userValidation";
+import type { ZodType } from "node_modules/zod/v4/classic/external.d.cts";
+
+function zodValidator(schema: ZodType) {
+  return ({ value }: { value: unknown }) => {
+    const result = schema.safeParse(value);
+    return result.success ? undefined : result.error.issues[0].message;
+  };
+}
 
 export function SignInForm() {
   const navigate = useNavigate();
 
-  const form = useForm({
+  const form = useForm<UserFormSchema>({
     defaultValues: {
       email: "",
       password: "",
     },
+    validators: {
+      onSubmit: userFormSchema,
+    },
     onSubmit: async ({ value }) => {
-      // alert(`Email: ${value.email}, Password: ${value.password}`);
+      console.log("Form submitted with values:", value);
       navigate({ to: "/dashboard" });
     },
   });
   return (
     <div className="flex justify-center items-center h-screen">
-      <Card>
-        <CardTitle className="text-center font-bold">Sign In!</CardTitle>
+      <Card className="w-98">
+        <CardTitle className="text-center font-bold">
+          Employee Directory
+        </CardTitle>
         <CardContent>
           <form
             onSubmit={(e) => {
@@ -32,24 +51,46 @@ export function SignInForm() {
           >
             <form.Field
               name="email"
+              validators={{
+                onChange: zodValidator(emailSchema),
+                onBlur: zodValidator(emailSchema),
+              }}
               children={(field) => (
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  value={field.value}
-                  onChange={(e) => field.setValue(e.target.value)}
-                />
+                <>
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.map((error, i) => (
+                    <p key={i} className="text-red-500 text-sm">
+                      {error}
+                    </p>
+                  ))}
+                </>
               )}
             />
             <form.Field
               name="password"
+              validators={{
+                onChange: zodValidator(passwordSchema),
+                onBlur: zodValidator(passwordSchema),
+              }}
               children={(field) => (
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  value={field.value}
-                  onChange={(e) => field.setValue(e.target.value)}
-                />
+                <>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.map((error, i) => (
+                    <p key={i} className="text-red-500 text-sm">
+                      {error}
+                    </p>
+                  ))}
+                </>
               )}
             />
             <form.Subscribe
