@@ -1,7 +1,7 @@
 import { SignInForm } from "#/components/auth/SignInForm";
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/sign-in")({
+export const Route = createFileRoute("/(auth)/sign-in")({
   component: RouteComponent,
 });
 
