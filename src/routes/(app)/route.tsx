@@ -10,10 +10,7 @@ function RouteComponent() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <div className="mx-2">{/* <SidebarTrigger /> */}</div>
-        <Outlet />
-      </main>
+      <Outlet />
     </SidebarProvider>
   );
 }
